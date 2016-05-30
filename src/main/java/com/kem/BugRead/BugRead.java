@@ -29,11 +29,17 @@ import java.util.regex.Pattern;
  * Created by KATSU on 26/5/2559.
  */
 public class BugRead {
+    private String dirLocation;
     Logger logger = Logger.getLogger(BugRead.class);
     File[] allFile;
-
-    public BugRead(String dirLocation String severity){
+    String severity;
+    public BugRead(String dirLocation){
         PropertyConfigurator.configure("src/main/resources/log4j.properties");
+
+        this.dirLocation = dirLocation;
+    }
+
+    private void readFile(){
         File folder = new File(dirLocation);
         allFile = folder.listFiles();
         Arrays.sort( allFile, new Comparator()
@@ -51,7 +57,6 @@ public class BugRead {
             }
 
         });
-
     }
 
     public String ReadByXmlDom(int limit){
@@ -106,7 +111,7 @@ public class BugRead {
         return resultList;
     }
 
-    public static void writeToFile(List<String> text,String path){
+    public static String writeToFile(List<String> text,String path) throws IOException {
 
         Path file = Paths.get(path);
         try {
@@ -114,5 +119,7 @@ public class BugRead {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        FileInputStream inputStream = new FileInputStream(new File(path).getAbsoluteFile());
+        return IOUtils.toString(inputStream,"UTF-8");
     }
 }

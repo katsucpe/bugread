@@ -3,16 +3,22 @@ package BugReadTest;
 /**
  * Created by KATSU on 26/5/2559.
  */
+import com.kem.WordCountWebDriver.WordCountWeb;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.testng.annotations.*;
 import com.kem.BugRead.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SimpleTest {
     private BugRead reader;
     @BeforeClass
     public void setUp() {
-        String dirPath = "C:\\Users\\KATSU\\docker\\ubuntu\\data\\apache\\blocker";
+        String dirPath = "C:\\Users\\KATSU\\docker\\data\\apache\\blocker";
         reader = new BugRead(dirPath);
     }
 
@@ -22,11 +28,11 @@ public class SimpleTest {
         reader.ReadByXmlDom(50);
     }*/
     @Test(groups = { "fast" })
-    public void PlainTextTest() {
+    public void PlainTextTest() throws IOException {
         ArrayList<String> result = reader.ReadText(50);
-        BugRead.writeToFile(result, "C:\\Users\\KATSU\\docker\\ubuntu\\data\\apache\\0.blocker50.txt");
+        String allText = BugRead.writeToFile(result, "C:\\Users\\KATSU\\docker\\data\\apache\\0.blocker50.txt");
+        HashMap<String, Integer> countResult = WordCountWeb.getInstance().getCountResult(allText);
     }
-
 
 }
 
