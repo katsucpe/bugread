@@ -4,6 +4,7 @@ package BugReadTest;
  * Created by KATSU on 26/5/2559.
  */
 
+import com.kem.Export.ExcelWriter;
 import com.kem.WordCountWebDriver.WordCountWeb;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -35,6 +36,8 @@ public class SimpleTest {
         String allText = BugRead.writeToFile(result, "C:\\Users\\KEM-PC\\docker\\data\\apache\\0.blocker50.txt");
         WordCountWeb.getInstance().setTopWord(50);
         ArrayList<WordCountWeb.WordDensity> countResult = WordCountWeb.getInstance().getCountResult(allText);
+        ExcelWriter writer = new ExcelWriter("C:\\Users\\KEM-PC\\docker\\data\\apache\\0.WordCount.xlsx");
+        writer.AddData(countResult);
     }
 
 }
