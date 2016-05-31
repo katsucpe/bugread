@@ -3,6 +3,7 @@ package BugReadTest;
 /**
  * Created by KATSU on 26/5/2559.
  */
+
 import com.kem.WordCountWebDriver.WordCountWeb;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 
 public class SimpleTest {
     private BugRead reader;
+
     @BeforeClass
     public void setUp() {
         String dirPath = "C:\\Users\\KEM-PC\\docker\\data\\apache\\blocker";
@@ -27,7 +29,7 @@ public class SimpleTest {
 
         reader.ReadByXmlDom(50);
     }*/
-    @Test(groups = { "fast" })
+    @Test(groups = {"fast"})
     public void PlainTextTest() throws IOException {
         ArrayList<String> result = reader.ReadText(50);
         String allText = BugRead.writeToFile(result, "C:\\Users\\KEM-PC\\docker\\data\\apache\\0.blocker50.txt");

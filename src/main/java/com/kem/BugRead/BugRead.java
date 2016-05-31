@@ -34,20 +34,20 @@ public class BugRead {
     Logger logger = Logger.getLogger(BugRead.class);
     File[] allFile;
     String severity;
-    public BugRead(String dirLocation){
+
+    public BugRead(String dirLocation) {
         PropertyConfigurator.configure("src/main/resources/log4j.properties");
 
         this.dirLocation = dirLocation;
     }
 
-    private void readFile(){
+    private void readFile() {
         File folder = new File(dirLocation);
         allFile = folder.listFiles();
-        Arrays.sort( allFile, new Comparator()
-        {
+        Arrays.sort(allFile, new Comparator() {
             public int compare(Object o1, Object o2) {
-                int name1 = Integer.parseInt(((File)o1).getName().replace(".xml",""));
-                int name2 = Integer.parseInt(((File)o2).getName().replace(".xml",""));
+                int name1 = Integer.parseInt(((File) o1).getName().replace(".xml", ""));
+                int name2 = Integer.parseInt(((File) o2).getName().replace(".xml", ""));
                 if (name1 > name2) {
                     return -1;
                 } else if (name1 < name2) {
@@ -60,13 +60,13 @@ public class BugRead {
         });
     }
 
-    public String ReadByXmlDom(int limit){
+    public String ReadByXmlDom(int limit) {
         readFile();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         ArrayList<String> resultList = new ArrayList<>();
         try {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            for(int i = 1; i<=limit; i++){
+            for (int i = 1; i <= limit; i++) {
                 File f = allFile[i];
                 logger.info(String.format("Read file: %s", f.getName()));
                 Document doc = dBuilder.parse(f);
@@ -80,12 +80,12 @@ public class BugRead {
         return Arrays.deepToString(resultList.toArray());
     }
 
-    public ArrayList<String> ReadText(int limit){
+    public ArrayList<String> ReadText(int limit) {
         readFile();
         FileInputStream inputStream = null;
         Pattern pattern = Pattern.compile("<short_desc>(.*?)</short_desc>");
         ArrayList<String> resultList = new ArrayList<>();
-        for(int i = 1; i<=limit; i++) {
+        for (int i = 1; i <= limit; i++) {
             File f = allFile[i];
             logger.info(String.format("Read file: %s", f.getName()));
             try {
@@ -94,7 +94,7 @@ public class BugRead {
                 String everything = StringEscapeUtils.unescapeXml(IOUtils.toString(inputStream, Charsets.toCharset("UTF-8")));
 
                 Matcher matcher = pattern.matcher(everything);
-                if(matcher.find()){
+                if (matcher.find()) {
                     resultList.add(matcher.group(1));
                 }
             } catch (IOException e) {
@@ -114,7 +114,7 @@ public class BugRead {
         return resultList;
     }
 
-    public static String writeToFile(List<String> text,String path) throws IOException {
+    public static String writeToFile(List<String> text, String path) throws IOException {
 
         Path file = Paths.get(path);
         try {
@@ -123,6 +123,6 @@ public class BugRead {
             e.printStackTrace();
         }
         FileInputStream inputStream = new FileInputStream(new File(path).getAbsoluteFile());
-        return IOUtils.toString(inputStream,"UTF-8");
+        return IOUtils.toString(inputStream, "UTF-8");
     }
 }

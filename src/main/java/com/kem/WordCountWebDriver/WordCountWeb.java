@@ -20,7 +20,8 @@ public class WordCountWeb {
     private static WordCountWeb instance;
     private String url = "http://wordcounttools.com/";
     private WebDriver driver;
-    private WordCountWeb(){
+
+    private WordCountWeb() {
         /*String chromepath = String.join("\\",new String[]{System.getProperty("user.dir"),"target","chromedriver.exe"});
         System.setProperty("webdriver.chrome.driver", chromepath);
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
@@ -33,13 +34,13 @@ public class WordCountWeb {
     }
 
     public static WordCountWeb getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new WordCountWeb();
         }
         return instance;
     }
 
-    public ArrayList<WordDensity> getCountResult(String text){
+    public ArrayList<WordDensity> getCountResult(String text) {
         WebElement textbox = driver.findElement(By.id("textbox"));
         StringSelection stringSelection = new StringSelection(text);
         Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -48,22 +49,22 @@ public class WordCountWeb {
         return readResult();
     }
 
-    public void setTopWord(int number){
+    public void setTopWord(int number) {
         WebElement textbox = driver.findElement(By.id("numTopKeyWord"));
         textbox.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         textbox.sendKeys(Keys.DELETE);
         textbox.sendKeys(Integer.toString(number));
     }
 
-    private ArrayList<WordDensity> readResult(){
+    private ArrayList<WordDensity> readResult() {
         java.util.List<WebElement> wordElems = driver.findElements(By.xpath("//div[@id='densityList']//label"));
         String patternStr = "<strong>(.*?)<\\/strong> - (\\d+) .*?(\\d+\\.\\d+)%";
         Pattern pattern = Pattern.compile(patternStr);
         ArrayList<WordDensity> wordDensityMap = new ArrayList<>();
-        for (WebElement ele:wordElems ) {
+        for (WebElement ele : wordElems) {
             String html = ele.getAttribute("outerHTML");
             Matcher matcher = pattern.matcher(html);
-            if(matcher.find()){
+            if (matcher.find()) {
                 WordDensity d = new WordDensity(matcher.group(1),
                         Integer.parseInt(matcher.group(2)), Double.parseDouble(matcher.group((3))));
                 wordDensityMap.add(d);
@@ -72,11 +73,12 @@ public class WordCountWeb {
         return wordDensityMap;
     }
 
-    public class WordDensity{
+    public class WordDensity {
         String word;
         int density = 0;
         double densityPct = 0.0;
-        public WordDensity(String word, int density, double densityPct){
+
+        public WordDensity(String word, int density, double densityPct) {
             this.word = word;
             this.density = density;
             this.densityPct = densityPct;
@@ -94,7 +96,7 @@ public class WordCountWeb {
             return densityPct;
         }
 
-        public String toString(){
+        public String toString() {
             return String.format("%s - %s times (%s%\u0025)", word, density, densityPct);
         }
     }

@@ -40,7 +40,6 @@
         </dependency>
 
 
-
     </dependencies>
     <build>
         <resources>
@@ -49,7 +48,7 @@
                 <targetPath>${project.build.directory}</targetPath>
                 <includes>
                     <include>log4j.properties</include>
-                    <include>chromedriver.exe</include>
+
                 </includes>
             </resource>
         </resources>
