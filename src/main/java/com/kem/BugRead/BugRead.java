@@ -2,6 +2,7 @@ package com.kem.BugRead;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.w3c.dom.Document;
@@ -60,6 +61,7 @@ public class BugRead {
     }
 
     public String ReadByXmlDom(int limit){
+        readFile();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         ArrayList<String> resultList = new ArrayList<>();
         try {
@@ -79,6 +81,7 @@ public class BugRead {
     }
 
     public ArrayList<String> ReadText(int limit){
+        readFile();
         FileInputStream inputStream = null;
         Pattern pattern = Pattern.compile("<short_desc>(.*?)</short_desc>");
         ArrayList<String> resultList = new ArrayList<>();
@@ -88,7 +91,7 @@ public class BugRead {
             try {
 
                 inputStream = new FileInputStream(f.getAbsoluteFile());
-                String everything = IOUtils.toString(inputStream, Charsets.toCharset("UTF-8"));
+                String everything = StringEscapeUtils.unescapeXml(IOUtils.toString(inputStream, Charsets.toCharset("UTF-8")));
 
                 Matcher matcher = pattern.matcher(everything);
                 if(matcher.find()){
