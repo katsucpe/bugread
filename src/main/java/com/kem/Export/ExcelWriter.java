@@ -54,17 +54,37 @@ public class ExcelWriter {
     }
 
     public void AddData(List<WordCountWeb.WordDensity> densityList, String severity) throws IOException {
+        XSSFWorkbook wb;
         if (Files.exists(Paths.get(filePath))) {
             int rowNum = 0;
             InputStream input = new FileInputStream(filePath);
-            XSSFWorkbook wb = new XSSFWorkbook(input);
+            wb = new XSSFWorkbook(input);
             XSSFSheet sheet = wb.getSheetAt(0);
             for (WordCountWeb.WordDensity word:densityList){
                 int targetRow = getSearchRow(sheet, word.getWord());
+                XSSFCell wordCell = sheet.getRow(targetRow).createCell(columnIndex);
+                wordCell.setCellValue(densityList.get(r).getDensity());
             }
-
+        }else{
+            wb = new XSSFWorkbook();
+            XSSFSheet sheet = wb.createSheet(sheetName);
+            XSSFRow rowHeader = sheet.createRow(0);
+            rowHeader.createCell(0).setCellValue("Word");
+            rowHeader.createCell(1).setCellValue("Blocker");
+            rowHeader.createCell(2).setCellValue("Critical");
+            rowHeader.createCell(3).setCellValue("Major");
+            rowHeader.createCell(4).setCellValue("Normal");
+            rowHeader.createCell(5).setCellValue("Minor");
+            rowHeader.createCell(6).setCellValue("Trival");
 
         }
+
+        FileOutputStream fileOut = new FileOutputStream(filePath);
+
+        //write this workbook to an Outputstream.
+        wb.write(fileOut);
+        fileOut.flush();
+        fileOut.close();
     }
 
     private int getSearchRow(XSSFSheet sheet, String cellContent){
