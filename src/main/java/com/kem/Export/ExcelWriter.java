@@ -1,12 +1,11 @@
 package com.kem.Export;
 
 import com.kem.WordCountWebDriver.WordCountWeb;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTable;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -23,7 +22,7 @@ public class ExcelWriter {
     public ExcelWriter(String filePath) {
         this.filePath = filePath;
     }
-
+    Logger logger = Logger.getLogger(ExcelWriter.class);
     public void AddData(List<WordCountWeb.WordDensity> densityList) throws IOException {
         String excelFileName = filePath;//name of excel file
 
@@ -57,7 +56,6 @@ public class ExcelWriter {
         XSSFWorkbook wb;
         XSSFSheet sheet;
         if (Files.exists(Paths.get(filePath))) {
-            int rowNum = 0;
             InputStream input = new FileInputStream(filePath);
             wb = new XSSFWorkbook(input);
             sheet = wb.getSheetAt(0);
@@ -72,12 +70,17 @@ public class ExcelWriter {
             rowHeader.createCell(3).setCellValue("Major");
             rowHeader.createCell(4).setCellValue("Normal");
             rowHeader.createCell(5).setCellValue("Minor");
-            rowHeader.createCell(6).setCellValue("Trival");
+            rowHeader.createCell(6).setCellValue("Trivial");
 
         }
         for (WordCountWeb.WordDensity word:densityList){
             int targetRow = getSearchRow(sheet, word.getWord());
-            XSSFCell wordCell = sheet.getRow(targetRow).createCell(getColumnIndex(severity));
+            if (targetRow > sheet.getLastRowNum()){
+                sheet.createRow(targetRow).createCell(0).setCellValue(word.getWord());
+            }
+            int columnIndex = getColumnIndex(severity);
+            logger.info(String.format("Write[%s] to row [%s], and [%s] to column [%s]", word.getWord(), targetRow, word.getDensity(), columnIndex));
+            XSSFCell wordCell = sheet.getRow(targetRow).createCell(columnIndex);
             wordCell.setCellValue(word.getDensity());
         }
         FileOutputStream fileOut = new FileOutputStream(filePath);
@@ -93,13 +96,12 @@ public class ExcelWriter {
             XSSFRow row = sheet.getRow(j);
             XSSFCell cell = row.getCell(0);
             int rowNum = 0;
-            if(cell.getRichStringCellValue().getString () == cellContent){
-
+            if(cell.getRichStringCellValue().getString().equals(cellContent)){
                 rowNum = row.getRowNum();
                 return rowNum;
             }
         }
-        return sheet.getLastRowNum();
+        return sheet.getLastRowNum() + 1;
     }
 
     private int getColumnIndex(String severity){
@@ -109,7 +111,7 @@ public class ExcelWriter {
             case "major" : return 3;
             case "normal" : return 4;
             case "minor" : return 5;
-            case "trival" : return 6;
+            case "trivial" : return 6;
             default: return 0;
         }
     }

@@ -40,14 +40,23 @@ public class WordCountWeb {
         return instance;
     }
 
+    public void quit(){
+        driver.quit();
+        driver = null;
+    }
+
     public ArrayList<WordDensity> getCountResult(String text) {
         WebElement textbox = driver.findElement(By.id("textbox"));
+        textbox.click();
+        textbox.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        textbox.sendKeys(Keys.DELETE);
         StringSelection stringSelection = new StringSelection(text);
         Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
         clpbrd.setContents(stringSelection, null);
         textbox.sendKeys(Keys.chord(Keys.CONTROL, "v"));
         return readResult();
     }
+
 
     public void setTopWord(int number) {
         WebElement textbox = driver.findElement(By.id("numTopKeyWord"));

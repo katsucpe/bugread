@@ -21,7 +21,7 @@ public class SimpleTest {
 
     @BeforeClass
     public void setUp() {
-        String dirPath = "C:\\Users\\KEM-PC\\docker\\data\\apache\\blocker";
+        String dirPath = "C:\\Users\\KATSU\\docker\\data\\apache\\blocker";
         reader = new BugRead(dirPath);
     }
 
@@ -32,12 +32,24 @@ public class SimpleTest {
     }*/
     @Test(groups = {"fast"})
     public void PlainTextTest() throws IOException {
-        ArrayList<String> result = reader.ReadText(50);
-        String allText = BugRead.writeToFile(result, "C:\\Users\\KEM-PC\\docker\\data\\apache\\0.blocker50.txt");
+        String path = "C:\\Users\\KATSU\\docker\\data\\apache";
+        processBug(path, "blocker", 50);
+        processBug(path, "critical", 50);
+        processBug(path, "major", 50);
+        processBug(path, "normal", 50);
+        processBug(path, "minor", 50);
+        processBug(path, "trivial", 50);
+        WordCountWeb.getInstance().quit();
+    }
+
+    private void processBug(String path, String severity, int limit)  throws IOException {
+        reader = new BugRead(String.join("\\", new String[]{path, severity}));
+        ArrayList<String> result = reader.ReadText(limit);
         WordCountWeb.getInstance().setTopWord(50);
-        ArrayList<WordCountWeb.WordDensity> countResult = WordCountWeb.getInstance().getCountResult(allText);
-        ExcelWriter writer = new ExcelWriter("C:\\Users\\KEM-PC\\docker\\data\\apache\\0.WordCount.xlsx");
-        writer.AddData(countResult);
+        String allText = BugRead.writeToFile(result, String.format("%s\\0.%s%s.txt", path, severity, limit));
+        ArrayList<WordCountWeb.WordDensity> countResultCritical = WordCountWeb.getInstance().getCountResult(allText);
+        ExcelWriter writer = new ExcelWriter(path + "\\0.WordCount.xlsx");
+        writer.AddData(countResultCritical, severity);
     }
 
 }
