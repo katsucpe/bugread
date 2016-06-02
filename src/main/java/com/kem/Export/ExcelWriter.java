@@ -1,14 +1,17 @@
 package com.kem.Export;
 
 import com.kem.WordCountWebDriver.WordCountWeb;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -16,7 +19,7 @@ import java.util.List;
  */
 public class ExcelWriter {
     private final String filePath;
-
+    final String sheetName = "Sheet1";
     public ExcelWriter(String filePath) {
         this.filePath = filePath;
     }
@@ -24,7 +27,7 @@ public class ExcelWriter {
     public void AddData(List<WordCountWeb.WordDensity> densityList) throws IOException {
         String excelFileName = filePath;//name of excel file
 
-        String sheetName = "Sheet1";//name of sheet
+
 
         XSSFWorkbook wb = new XSSFWorkbook();
         XSSFSheet sheet = wb.createSheet(sheetName);
@@ -48,5 +51,33 @@ public class ExcelWriter {
         wb.write(fileOut);
         fileOut.flush();
         fileOut.close();
+    }
+
+    public void AddData(List<WordCountWeb.WordDensity> densityList, String severity) throws IOException {
+        if (Files.exists(Paths.get(filePath))) {
+            int rowNum = 0;
+            InputStream input = new FileInputStream(filePath);
+            XSSFWorkbook wb = new XSSFWorkbook(input);
+            XSSFSheet sheet = wb.getSheetAt(0);
+            for (WordCountWeb.WordDensity word:densityList){
+                int targetRow = getSearchRow(sheet, word.getWord());
+            }
+
+
+        }
+    }
+
+    private int getSearchRow(XSSFSheet sheet, String cellContent){
+        for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
+            XSSFRow row = sheet.getRow(j);
+            XSSFCell cell = row.getCell(0);
+            int rowNum = 0;
+            if(cell.getRichStringCellValue().getString () == cellContent){
+
+                rowNum = row.getRowNum();
+                return rowNum;
+            }
+        }
+        return sheet.getLastRowNum();
     }
 }
