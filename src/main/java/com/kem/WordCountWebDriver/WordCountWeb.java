@@ -40,8 +40,8 @@ public class WordCountWeb {
         return instance;
     }
 
-    public void quit(){
-        driver.quit();
+    public void close(){
+        driver.close();
         driver = null;
     }
 

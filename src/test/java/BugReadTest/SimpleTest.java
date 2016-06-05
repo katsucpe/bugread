@@ -21,8 +21,7 @@ public class SimpleTest {
 
     @BeforeClass
     public void setUp() {
-        String dirPath = "C:\\Users\\KATSU\\docker\\data\\apache\\blocker";
-        reader = new BugRead(dirPath);
+
     }
 
     /*@Test(groups = { "fast" })
@@ -32,14 +31,14 @@ public class SimpleTest {
     }*/
     @Test(groups = {"fast"})
     public void PlainTextTest() throws IOException {
-        String path = "C:\\Users\\KATSU\\docker\\data\\apache";
+        String path = "C:\\Users\\KATSU\\docker\\data\\mozilla";
         processBug(path, "blocker", 50);
         processBug(path, "critical", 50);
         processBug(path, "major", 50);
         processBug(path, "normal", 50);
         processBug(path, "minor", 50);
         processBug(path, "trivial", 50);
-        WordCountWeb.getInstance().quit();
+        WordCountWeb.getInstance().close();
     }
 
     private void processBug(String path, String severity, int limit)  throws IOException {
