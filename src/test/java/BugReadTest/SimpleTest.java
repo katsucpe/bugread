@@ -31,13 +31,13 @@ public class SimpleTest {
     }*/
     @Test(groups = {"fast"})
     public void PlainTextTest() throws IOException {
-        String path = "C:\\Users\\KATSU\\docker\\data\\Eclipse";
-        processBug(path, "blocker", 150);
-        processBug(path, "critical", 150);
-        processBug(path, "major", 150);
-        processBug(path, "normal", 150);
-        processBug(path, "minor", 150);
-        processBug(path, "trivial", 150);
+        String path = "C:\\Users\\KATSU\\docker\\data\\apache";
+        processBug(path, "blocker", 300);
+        processBug(path, "critical", 300);
+        processBug(path, "major", 300);
+        processBug(path, "normal", 300);
+        processBug(path, "minor", 300);
+        processBug(path, "trivial", 300);
         WordCountWeb.getInstance().close();
     }
 
@@ -47,7 +47,7 @@ public class SimpleTest {
         WordCountWeb.getInstance().setTopWord(50);
         String allText = BugRead.writeToFile(result, String.format("%s\\0.%s%s.txt", path, severity, limit));
         ArrayList<WordCountWeb.WordDensity> countResultCritical = WordCountWeb.getInstance().getCountResult(allText);
-        ExcelWriter writer = new ExcelWriter(path + "\\0.WordCount.xlsx");
+        ExcelWriter writer = new ExcelWriter(path + String.format("\\0.WordCount.%s.xlsx", limit));
         writer.AddData(countResultCritical, severity);
     }
 
