@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class BugRead {
     private String dirLocation;
     Logger logger = Logger.getLogger(BugRead.class);
-    File[] allFile;
+    protected File[] allFile;
     String severity;
 
     public BugRead(String dirLocation) {
@@ -66,7 +66,7 @@ public class BugRead {
         ArrayList<String> resultList = new ArrayList<>();
         try {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            for (int i = 1; i <= limit; i++) {
+            for (int i = 0; i <= limit; i++) {
                 File f = allFile[i];
                 logger.info(String.format("Read file: %s", f.getName()));
                 Document doc = dBuilder.parse(f);
@@ -85,7 +85,10 @@ public class BugRead {
         FileInputStream inputStream = null;
         Pattern pattern = Pattern.compile("<short_desc>(.*?)</short_desc>");
         ArrayList<String> resultList = new ArrayList<>();
-        for (int i = 1; i <= limit; i++) {
+        for (int i = 0; i <= limit; i++) {
+            if(i == allFile.length){
+                break;
+            }
             File f = allFile[i];
             logger.info(String.format("Read file: %s", f.getName()));
             try {
