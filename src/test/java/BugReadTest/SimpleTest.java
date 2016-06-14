@@ -34,7 +34,7 @@ public class SimpleTest {
         String path = "C:\\Users\\KATSU\\docker\\data\\apache";
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
-            processBug(path, serv, 300);
+            processBug(path, serv, 500);
         }
         WordCountWeb.getInstance().close();
     }
@@ -44,7 +44,7 @@ public class SimpleTest {
         String path = "C:\\Users\\KATSU\\docker\\data\\apache";
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
-            processBugRapidMiner(path, serv, 300);
+            processBugRapidMiner(path, serv, 500);
         }
 
     }
@@ -53,7 +53,7 @@ public class SimpleTest {
         reader = new BugRead(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
         WordCountWeb.getInstance().setTopWord(50);
-        String allText = reader.writeToFile(result, String.format("%s\\0.%s%s.txt", path, severity, limit));
+        String allText = reader.writeToFile(result, String.format("%s\\0.%s%s.txt", path, limit, severity));
         ArrayList<WordCountWeb.WordDensity> countResultCritical = WordCountWeb.getInstance().getCountResult(allText);
         ExcelWriter writer = new ExcelWriter(path + String.format("\\0.WordCount.%s.xlsx", limit));
         writer.AddData(countResultCritical, severity);
