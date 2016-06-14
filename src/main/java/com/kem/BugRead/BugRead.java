@@ -98,7 +98,7 @@ public class BugRead {
 
                 Matcher matcher = pattern.matcher(everything);
                 if (matcher.find()) {
-                    resultList.add(matcher.group(1));
+                    resultList.add(matcher.group(1).toLowerCase());
                 }
             } catch (IOException e) {
                 e.printStackTrace();

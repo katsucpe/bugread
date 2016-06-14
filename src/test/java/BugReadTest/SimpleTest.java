@@ -53,7 +53,7 @@ public class SimpleTest {
         reader = new BugRead(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
         WordCountWeb.getInstance().setTopWord(50);
-        String allText = reader.writeToFile(result, String.format("%s\\0.%s%s.txt", path, limit, severity));
+        String allText = reader.writeToFile(result, String.format("%s\\0.%s.%s.txt", path, limit, severity));
         ArrayList<WordCountWeb.WordDensity> countResultCritical = WordCountWeb.getInstance().getCountResult(allText);
         ExcelWriter writer = new ExcelWriter(path + String.format("\\0.WordCount.%s.xlsx", limit));
         writer.AddData(countResultCritical, severity);
@@ -62,7 +62,7 @@ public class SimpleTest {
     private void processBugRapidMiner(String path, String severity, int limit)  throws IOException {
         reader = new BugReadForRapidMiner(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
-        String allText = reader.writeToFile(result, String.format("%s\\0.%s%s", path, severity, limit));
+        String allText = reader.writeToFile(result, String.format("%s\\0.%s.%s", path, limit, severity));
 
     }
 }
