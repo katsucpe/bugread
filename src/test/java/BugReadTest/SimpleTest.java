@@ -31,7 +31,7 @@ public class SimpleTest {
     }*/
     @Test(groups = {"fast"})
     public void PlainTextTest() throws IOException {
-        String path = "C:\\Users\\KATSU\\docker\\data\\apache";
+        String path = "C:\\Users\\KATSU\\docker\\data\\Eclipse";
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
             processBug(path, serv, 500);
@@ -41,7 +41,7 @@ public class SimpleTest {
 
     @Test(groups = {"fast"})
     public void ProcessTextForRapidMinerTest() throws IOException {
-        String path = "C:\\Users\\KATSU\\docker\\data\\apache";
+        String path = "C:\\Users\\KATSU\\docker\\data\\Eclipse";
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
             processBugRapidMiner(path, serv, 500);
@@ -52,7 +52,7 @@ public class SimpleTest {
     private void processBug(String path, String severity, int limit)  throws IOException {
         reader = new BugRead(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
-        WordCountWeb.getInstance().setTopWord(50);
+        WordCountWeb.getInstance().setTopWord(500);
         String allText = reader.writeToFile(result, String.format("%s\\0.%s.%s.txt", path, limit, severity));
         ArrayList<WordCountWeb.WordDensity> countResultCritical = WordCountWeb.getInstance().getCountResult(allText);
         ExcelWriter writer = new ExcelWriter(path + String.format("\\0.WordCount.%s.xlsx", limit));
@@ -64,6 +64,16 @@ public class SimpleTest {
         ArrayList<String> result = reader.ReadText(limit);
         String allText = reader.writeToFile(result, String.format("%s\\0.%s.%s", path, limit, severity));
 
+    }
+
+
+    @Test(groups = {"fast"})
+    public void ProcessTextForClassificationTest() throws IOException {
+        String path = "C:\\Users\\KATSU\\docker\\data\\Eclipse";
+        reader = new BugReadForClass(String.join("\\", new String[]{path, "blocker"}));
+
+        ArrayList<String> result = reader.ReadText(100);
+        String allText = reader.writeToFile(result, String.format("%s\\0.%s.%s.ForClass.csv", path, 100, "blocker"));
     }
 }
 

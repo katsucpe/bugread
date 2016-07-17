@@ -1,5 +1,6 @@
 package com.kem.BugRead;
 
+import com.kem.Utils;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -41,23 +42,10 @@ public class BugRead {
         this.dirLocation = dirLocation;
     }
 
-    private void readFile() {
+    protected void readFile() {
         File folder = new File(dirLocation);
         allFile = folder.listFiles();
-        Arrays.sort(allFile, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                int name1 = Integer.parseInt(((File) o1).getName().replace(".xml", ""));
-                int name2 = Integer.parseInt(((File) o2).getName().replace(".xml", ""));
-                if (name1 > name2) {
-                    return -1;
-                } else if (name1 < name2) {
-                    return +1;
-                } else {
-                    return 0;
-                }
-            }
-
-        });
+        Utils.sortFileList(allFile);
     }
 
     public String ReadByXmlDom(int limit) {
