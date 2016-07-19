@@ -17,6 +17,16 @@ public class ReadVisualizeResult {
         this.dirLocation = dirLocation;
     }
 
+    public void process(){
+
+        try {
+            readUniqueWord();
+            readHighProb();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private HashMap<String, List<String>> uniqueWords = new HashMap<>();
     public void readUniqueWord() throws IOException {
         String path = String.format("%s//uniqueWord.txt", dirLocation);

@@ -5,6 +5,7 @@ package BugReadTest;
  */
 
 import com.kem.Export.ExcelWriter;
+import com.kem.ReadVisualizeResult.ReadVisualizeResult;
 import com.kem.WordCountWebDriver.WordCountWeb;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -74,12 +75,20 @@ public class SimpleTest {
         for (String serv: severityList ) {
             processBugClassification(path, serv, 100);
         }
+
+
+    }
+    @Test(groups = {"fast"})
+    public void ProcessVisualizationResult(){
+        ReadVisualizeResult readVisualizeResult = new ReadVisualizeResult("C:\\Users\\KATSU\\docker\\data\\Eclipse\\Model");
+        readVisualizeResult.process();
     }
 
     private void processBugClassification(String path, String severity, int limit)  throws IOException {
         reader = new BugReadForClass(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
         String allText = reader.writeToFile(result, String.format("%s\\1.%s.%s.ForTest.csv", path, limit, severity));
+
     }
 }
 
