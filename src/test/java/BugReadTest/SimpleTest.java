@@ -79,7 +79,7 @@ public class SimpleTest {
     private void processBugClassification(String path, String severity, int limit)  throws IOException {
         reader = new BugReadForClass(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
-        String allText = reader.writeToFile(result, String.format("%s\\1.%s.%s.ForClass.csv", path, limit, severity));
+        String allText = reader.writeToFile(result, String.format("%s\\1.%s.%s.ForTest.csv", path, limit, severity));
     }
 }
 

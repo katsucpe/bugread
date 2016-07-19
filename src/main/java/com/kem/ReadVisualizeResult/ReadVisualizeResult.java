@@ -36,4 +36,12 @@ public class ReadVisualizeResult {
             highProbWords.put(temp[0], Arrays.asList(wordInSeverity));
         }
     }
+
+    public HashMap<String, List<String>> getUniqueWords(){
+        return uniqueWords;
+    }
+
+    public HashMap<String, List<String>> getHighProbWords(){
+        return highProbWords;
+    }
 }
