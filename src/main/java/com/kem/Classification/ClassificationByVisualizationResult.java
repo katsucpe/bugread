@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -40,7 +41,6 @@ public class ClassificationByVisualizationResult {
         File[] allFile = folder.listFiles();
         assert allFile != null;
         String serv = String.join("|", severityList);
-        allFile.
         for (File f : allFile) {
             if (f.getName().toLowerCase().matches(serv))
                 try (Stream<String> stream = Files.lines(Paths.get(f.getAbsolutePath()))) {
