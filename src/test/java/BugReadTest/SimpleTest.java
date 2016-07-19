@@ -4,6 +4,8 @@ package BugReadTest;
  * Created by KATSU on 26/5/2559.
  */
 
+import com.kem.Classification.ClassificationByVisualizationResult;
+import com.kem.Classification.ExcelClassResultWriter;
 import com.kem.Export.ExcelWriter;
 import com.kem.ReadVisualizeResult.ReadVisualizeResult;
 import com.kem.WordCountWebDriver.WordCountWeb;
@@ -79,15 +81,20 @@ public class SimpleTest {
 
     }
     @Test(groups = {"fast"})
-    public void ProcessVisualizationResult(){
+    public void ProcessVisualizationResult() throws IOException {
         ReadVisualizeResult readVisualizeResult = new ReadVisualizeResult("C:\\Users\\KATSU\\docker\\data\\Eclipse\\Model");
         readVisualizeResult.process();
+        String testDir = "C:\\Users\\KATSU\\docker\\data\\Eclipse\\Test";
+        ClassificationByVisualizationResult clsResult = new ClassificationByVisualizationResult(readVisualizeResult.getUniqueWords(), readVisualizeResult.getHighProbWords(), testDir);
+        clsResult.process();
+        ExcelClassResultWriter resultWriter = new ExcelClassResultWriter(testDir + "\\classResult.xlsx", clsResult.getClassifiedObject());
+        resultWriter.writeDataToFile();
     }
 
     private void processBugClassification(String path, String severity, int limit)  throws IOException {
         reader = new BugReadForClass(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
-        String allText = reader.writeToFile(result, String.format("%s\\1.%s.%s.ForTest.csv", path, limit, severity));
+        String allText = reader.writeToFile(result, String.format("%s\\Test\\1.%s.%s.ForTest.csv", path, limit, severity));
 
     }
 }

@@ -33,7 +33,7 @@ public class ReadVisualizeResult {
         for (String line : Files.readAllLines(Paths.get(path))) {
             String[] temp = line.split("=");
             String[] wordInSeverity = temp[1].split(", |,");
-            uniqueWords.put(temp[0], Arrays.asList(wordInSeverity));
+            uniqueWords.put(temp[0].toLowerCase(), Arrays.asList(wordInSeverity));
         }
     }
     private HashMap<String, List<String>> highProbWords = new HashMap<>();
