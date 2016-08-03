@@ -30,8 +30,9 @@ public class ClassificationByVisualizationResult {
 
     public void process() {
         readTestObject();
-        classify(highPropWords);
+
         classify(uniqueWords);
+        classify(highPropWords);
 
     }
 

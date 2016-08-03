@@ -27,14 +27,21 @@ public class SimpleTest {
 
     }
 
-    /*@Test(groups = { "fast" })
-    public void XmlTest() {
+    private String rootPath = "C:\\Users\\KATSU\\docker\\data\\";
+    private String projectName = "LibreOffice";
+    @Test(groups = {"fast"})
+    public void ProcessTextForRapidMinerTest() throws IOException {
+        String path = rootPath + projectName;
+        String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
+        for (String serv: severityList ) {
+            processBugRapidMiner(path, serv, 100);
+        }
 
-        reader.ReadByXmlDom(50);
-    }*/
+    }
+
     @Test(groups = {"fast"})
     public void PlainTextTest() throws IOException {
-        String path = "C:\\Users\\KATSU\\docker\\data\\Eclipse";
+        String path = rootPath + projectName;
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
             processBug(path, serv, 500);
@@ -42,49 +49,40 @@ public class SimpleTest {
         WordCountWeb.getInstance().close();
     }
 
-    @Test(groups = {"fast"})
-    public void ProcessTextForRapidMinerTest() throws IOException {
-        String path = "C:\\Users\\KATSU\\docker\\data\\Eclipse";
-        String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
-        for (String serv: severityList ) {
-            processBugRapidMiner(path, serv, 500);
-        }
-
-    }
-
     private void processBug(String path, String severity, int limit)  throws IOException {
-        reader = new BugRead(String.join("\\", new String[]{path, severity}));
+        reader = new BugRead(String.join("\\", new String[]{path, "Train",severity}));
+        int topWords = 100;
         ArrayList<String> result = reader.ReadText(limit);
-        WordCountWeb.getInstance().setTopWord(500);
+        WordCountWeb.getInstance().setTopWord(topWords);
         String allText = reader.writeToFile(result, String.format("%s\\0.%s.%s.txt", path, limit, severity));
         ArrayList<WordCountWeb.WordDensity> countResultCritical = WordCountWeb.getInstance().getCountResult(allText);
-        ExcelWriter writer = new ExcelWriter(path + String.format("\\0.WordCount.%s.xlsx", limit));
+        ExcelWriter writer = new ExcelWriter(path + String.format("\\0.WordCount.%s.topW%s.xlsx", limit, topWords));
         writer.AddData(countResultCritical, severity);
     }
 
     private void processBugRapidMiner(String path, String severity, int limit)  throws IOException {
-        reader = new BugReadForRapidMiner(String.join("\\", new String[]{path, severity}));
+        reader = new BugReadForRapidMiner(String.join("\\", new String[]{path, "Train",severity}));
         ArrayList<String> result = reader.ReadText(limit);
-        String allText = reader.writeToFile(result, String.format("%s\\0.%s.%s", path, limit, severity));
+        String allText = reader.writeToFile(result, String.format("%s\\ForRP\\2.%s.%s", path, limit, severity));
 
     }
 
 
     @Test(groups = {"fast"})
     public void ProcessTextForClassificationTest() throws IOException {
-        String path = "C:\\Users\\KATSU\\docker\\data\\Eclipse";
+        String path = rootPath + projectName;
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
-            processBugClassification(path, serv, 100);
+            processBugClassification(path + "\\TestData", serv, 100);
         }
 
 
     }
     @Test(groups = {"fast"})
     public void ProcessVisualizationResult() throws IOException {
-        ReadVisualizeResult readVisualizeResult = new ReadVisualizeResult("C:\\Users\\KATSU\\docker\\data\\Eclipse\\Model");
+        ReadVisualizeResult readVisualizeResult = new ReadVisualizeResult(rootPath + projectName + "\\Model");
         readVisualizeResult.process();
-        String testDir = "C:\\Users\\KATSU\\docker\\data\\Eclipse\\Test";
+        String testDir = rootPath + projectName + "\\TestResult";
         ClassificationByVisualizationResult clsResult = new ClassificationByVisualizationResult(readVisualizeResult.getUniqueWords(), readVisualizeResult.getHighProbWords(), testDir);
         clsResult.process();
         ExcelClassResultWriter resultWriter = new ExcelClassResultWriter(testDir + "\\classResult.xlsx", clsResult.getClassifiedObject());
@@ -94,7 +92,7 @@ public class SimpleTest {
     private void processBugClassification(String path, String severity, int limit)  throws IOException {
         reader = new BugReadForClass(String.join("\\", new String[]{path, severity}));
         ArrayList<String> result = reader.ReadText(limit);
-        String allText = reader.writeToFile(result, String.format("%s\\Test\\1.%s.%s.ForTest.csv", path, limit, severity));
+        String allText = reader.writeToFile(result, String.format("%s\\..\\TestResult\\1.%s.%s.ForTest.csv", path, limit, severity));
 
     }
 }
