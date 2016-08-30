@@ -37,8 +37,6 @@ public class BugRead {
     String severity;
 
     public BugRead(String dirLocation) {
-        PropertyConfigurator.configure("src/main/resources/log4j.properties");
-
         this.dirLocation = dirLocation;
     }
 

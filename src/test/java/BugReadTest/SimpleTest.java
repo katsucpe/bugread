@@ -8,6 +8,7 @@ import com.kem.Classification.ClassificationByVisualizationResult;
 import com.kem.Classification.ExcelClassResultWriter;
 import com.kem.Export.ExcelWriter;
 import com.kem.ReadVisualizeResult.ReadVisualizeResult;
+import com.kem.Utils;
 import com.kem.WordCountWebDriver.WordCountWeb;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -25,16 +26,18 @@ public class SimpleTest {
     @BeforeClass
     public void setUp() {
 
+        Utils.initLog();
     }
 
     private String rootPath = "C:\\Users\\KATSU\\docker\\data\\";
-    private String projectName = "LibreOffice";
+    private String projectName = "Eclipse";
+
     @Test(groups = {"fast"})
     public void ProcessTextForRapidMinerTest() throws IOException {
         String path = rootPath + projectName;
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
-            processBugRapidMiner(path, serv, 100);
+            processBugRapidMiner(path, serv, 300);
         }
 
     }
@@ -73,7 +76,7 @@ public class SimpleTest {
         String path = rootPath + projectName;
         String[] severityList = new String[] {"blocker", "critical", "major", "normal", "minor", "trivial" };
         for (String serv: severityList ) {
-            processBugClassification(path + "\\TestData", serv, 100);
+            processBugClassification(path + "\\TestData", serv, 150);
         }
 
 
@@ -85,8 +88,13 @@ public class SimpleTest {
         String testDir = rootPath + projectName + "\\TestResult";
         ClassificationByVisualizationResult clsResult = new ClassificationByVisualizationResult(readVisualizeResult.getUniqueWords(), readVisualizeResult.getHighProbWords(), testDir);
         clsResult.process();
-        ExcelClassResultWriter resultWriter = new ExcelClassResultWriter(testDir + "\\classResult.xlsx", clsResult.getClassifiedObject());
+        ExcelClassResultWriter resultWriter = new ExcelClassResultWriter(testDir + "\\classResult.6Class.xlsx", clsResult.getClassifiedObject());
         resultWriter.writeDataToFile();
+        ClassificationByVisualizationResult clsResult2 = new ClassificationByVisualizationResult(readVisualizeResult.getUniqueWords(), readVisualizeResult.getHighProbWords(), testDir);
+        clsResult2.process(true);
+        ExcelClassResultWriter resultWriter2 = new ExcelClassResultWriter(testDir + "\\classResult.2Class.xlsx", clsResult2.getClassifiedObject());
+        resultWriter2.writeDataToFile();
+
     }
 
     private void processBugClassification(String path, String severity, int limit)  throws IOException {

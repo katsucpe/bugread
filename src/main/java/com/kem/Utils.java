@@ -1,5 +1,7 @@
 package com.kem;
 
+import org.apache.log4j.PropertyConfigurator;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -31,5 +33,12 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static void initLog(){
+        try {
+            File log4jfile = new File("target/log4j.properties");
+            PropertyConfigurator.configure(log4jfile.getAbsolutePath());
+        }catch(Exception e){ e.printStackTrace();}
     }
 }

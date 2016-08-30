@@ -29,11 +29,21 @@ public class ClassificationByVisualizationResult {
     }
 
     public void process() {
+        process(false);
+    }
+
+    public void process(boolean is2class) {
         readTestObject();
 
-        classify(uniqueWords);
-        classify(highPropWords);
+        if (is2class){
+            classify(highPropWords);
+            classify(uniqueWords);
+        }
+        else{
 
+            classify(uniqueWords);
+            classify(highPropWords);
+        }
     }
 
     private String[] severityList = new String[]{"blocker", "critical", "major", "normal", "minor", "trivial"};

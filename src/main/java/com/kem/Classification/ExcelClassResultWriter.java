@@ -48,8 +48,8 @@ public class ExcelClassResultWriter {
             rowHeader.createCell(1).setCellValue("Subject");
             rowHeader.createCell(2).setCellValue("Actual");
             rowHeader.createCell(3).setCellValue("Class");
-            rowHeader.createCell(4).setCellValue("correct?");
-
+            rowHeader.createCell(4).setCellValue("correct? - 6 class");
+            rowHeader.createCell(5).setCellValue("correct? - 2 class");
         }
         List<String> lowservList = Arrays.asList( new String[]{"normal", "minor", "trivial"});
         List<String> highservList = Arrays.asList( new String[]{"blocker", "critical", "major"});
@@ -62,23 +62,40 @@ public class ExcelClassResultWriter {
             newRow.createCell(3).setCellValue(result.getClassResult());
             if(result.getClassResult().isEmpty()){
                 newRow.createCell(4).setCellValue("N/A");
+                newRow.createCell(5).setCellValue("N/A");
             } else {
                 if (result.getClassResult().equals(result.getActual())) {
                     newRow.createCell(4).setCellValue("T");
+                    newRow.createCell(5).setCellValue("T");
                 } else if (result.getClassResult().equalsIgnoreCase("high") && highservList.contains(result.getActual().toLowerCase())) {
-                    newRow.createCell(4).setCellValue("T");
+                    newRow.createCell(4).setCellValue("");
+                    newRow.createCell(5).setCellValue("T");
                 } else if (result.getClassResult().equalsIgnoreCase("low") && lowservList.contains(result.getActual().toLowerCase())) {
-                    newRow.createCell(4).setCellValue("T");
-                } else {
+                    newRow.createCell(4).setCellValue("");
+                    newRow.createCell(5).setCellValue("T");
+                } else if(highservList.contains(result.getClassResult().toLowerCase()) && highservList.contains(result.getActual().toLowerCase())){
                     newRow.createCell(4).setCellValue("F");
+                    newRow.createCell(5).setCellValue("T");
+                } else if(lowservList.contains(result.getClassResult().toLowerCase()) && lowservList.contains(result.getActual().toLowerCase())){
+                    newRow.createCell(4).setCellValue("F");
+                    newRow.createCell(5).setCellValue("T");
+                }else
+                    {
+                    newRow.createCell(4).setCellValue("F");
+                    newRow.createCell(5).setCellValue("F");
                 }
             }
         }
 
         XSSFRow rowHeader = sheet.getRow(1);
-        rowHeader.createCell(5).setCellFormula("COUNTIF(E2:E601, \"T\")");
-        rowHeader.createCell(6).setCellFormula("COUNTIF(E2:E601, \"F\")");
-        rowHeader.createCell(7).setCellFormula("COUNTIF(E2:E601, \"N/A\")");
+        int lastRow = resultList.size() + 1;
+        rowHeader.createCell(8).setCellFormula("COUNTIF(E2:E" + lastRow + ", \"T\")");
+        rowHeader.createCell(9).setCellFormula("COUNTIF(E2:E" + lastRow + ", \"F\")");
+        rowHeader.createCell(10).setCellFormula("COUNTIF(E2:E" + lastRow + ", \"N/A\")");
+        XSSFRow rowHeader2 = sheet.getRow(2);
+        rowHeader2.createCell(8).setCellFormula("COUNTIF(F2:F" + lastRow + ", \"T\")");
+        rowHeader2.createCell(9).setCellFormula("COUNTIF(F2:F" + lastRow + ", \"F\")");
+        rowHeader2.createCell(10).setCellFormula("COUNTIF(F2:F" + lastRow + ", \"N/A\")");
 
 
         FileOutputStream fileOut = new FileOutputStream(filePath);
