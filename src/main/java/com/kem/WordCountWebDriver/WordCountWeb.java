@@ -1,10 +1,15 @@
 package com.kem.WordCountWebDriver;
 
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.MarionetteDriverManager;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.MarionetteDriver;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -18,9 +23,10 @@ import java.util.regex.Pattern;
  */
 public class WordCountWeb {
     private static WordCountWeb instance;
+    //private final String driverPath = String.join("\\",new String[]{System.getProperty("user.dir"),"lib"});
     private String url = "http://wordcounttools.com/";
     private WebDriver driver;
-
+    Logger logger = Logger.getLogger(WordCountWeb.class);
     private WordCountWeb() {
         /*String chromepath = String.join("\\",new String[]{System.getProperty("user.dir"),"target","chromedriver.exe"});
         System.setProperty("webdriver.chrome.driver", chromepath);
@@ -29,7 +35,10 @@ public class WordCountWeb {
         capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
         driver = new ChromeDriver(capabilities);*/
-        driver = new FirefoxDriver();
+        //System.setProperty("webdriver.gecko.driver", driverPath+"\\geckodriver.exe");
+        //MarionetteDriverManager.getInstance().setup();
+        ChromeDriverManager.getInstance().setup();
+        driver = new ChromeDriver();
         driver.get(url);
     }
 
@@ -59,23 +68,26 @@ public class WordCountWeb {
 
 
     public void setTopWord(int number) {
-        WebElement textbox = driver.findElement(By.id("numTopKeyWord"));
+        WebElement textbox = driver.findElement(By.id("number_of_top_keywords_value"));
         textbox.sendKeys(Keys.chord(Keys.CONTROL, "a"));
         textbox.sendKeys(Keys.DELETE);
         textbox.sendKeys(Integer.toString(number));
     }
 
     private ArrayList<WordDensity> readResult() {
-        java.util.List<WebElement> wordElems = driver.findElements(By.xpath("//div[@id='densityList']//label"));
-        String patternStr = "<strong>(.*?)<\\/strong> - (\\d+) .*?(\\d+\\.\\d+)%";
+        java.util.List<WebElement> wordElems = driver.findElements(By.xpath("//div[@id='keyword_density_tabs']//*[@id='keyword_density-tab-1-table']//tr"));
+        String patternStr = "(\\d+) \\((.*?)%\\)";
         Pattern pattern = Pattern.compile(patternStr);
         ArrayList<WordDensity> wordDensityMap = new ArrayList<>();
         for (WebElement ele : wordElems) {
-            String html = ele.getAttribute("outerHTML");
-            Matcher matcher = pattern.matcher(html);
+            java.util.List<WebElement> results = ele.findElements(By.tagName("td"));
+            logger.info("Now process: " + results.get(0).getText() + " " +  results.get(1).getText());
+            String term = results.get(0).getText().split("\\d+. ")[1];
+            String tmpCount = results.get(1).getText();
+            Matcher matcher = pattern.matcher(tmpCount);
             if (matcher.find()) {
-                WordDensity d = new WordDensity(matcher.group(1),
-                        Integer.parseInt(matcher.group(2)), Double.parseDouble(matcher.group((3))));
+                WordDensity d = new WordDensity(term,
+                        Integer.parseInt(matcher.group(1)), Double.parseDouble(matcher.group((2))));
                 wordDensityMap.add(d);
             }
         }
